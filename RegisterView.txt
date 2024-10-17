@@ -1,54 +1,66 @@
 import SwiftUI
-import Firebase
 
 struct RegisterView: View {
-    @State private var email = ""
-    @State private var password = ""
-    @State private var confirmPassword = ""
-    @State private var errorMessage = ""
-    
+    @State private var email: String = ""
+    @State private var password: String = ""
+    @State private var confirmPassword: String = ""
+    @State private var errorMessage: String = ""
+
     var body: some View {
         VStack {
+            Text("Register")
+                .font(.largeTitle)
+                .padding(.bottom, 40)
+
+            // Champ Email
             TextField("Email", text: $email)
-                .padding()
                 .keyboardType(.emailAddress)
                 .autocapitalization(.none)
-                .border(Color.gray)
-            
+                .textFieldStyle(RoundedBorderTextFieldStyle())
+                .padding()
+
+            // Champ Mot de passe
             SecureField("Password", text: $password)
+                .textFieldStyle(RoundedBorderTextFieldStyle())
                 .padding()
-                .border(Color.gray)
-            
+
+            // Champ Confirmation Mot de passe
             SecureField("Confirm Password", text: $confirmPassword)
+                .textFieldStyle(RoundedBorderTextFieldStyle())
                 .padding()
-                .border(Color.gray)
-            
-            Button(action: register) {
-                Text("Register")
+
+            // Message d'erreur
+            if !errorMessage.isEmpty {
+                Text(errorMessage)
+                    .foregroundColor(.red)
                     .padding()
-                    .background(Color.blue)
-                    .foregroundColor(.white)
-                    .cornerRadius(8)
             }
-            
-            Text(errorMessage)
-                .foregroundColor(.red)
+
+            // Bouton Inscription
+            Button(action: {
+                registerUser()
+            }) {
+                Text("Register")
+                    .foregroundColor(.white)
+                    .padding()
+                    .frame(maxWidth: .infinity)
+                    .background(Color.green)
+                    .cornerRadius(8)
+                    .padding(.horizontal)
+            }
+
+            Spacer()
         }
         .padding()
     }
-    
-    private func register() {
-        if password != confirmPassword {
-            errorMessage = "Passwords do not match!"
-            return
-        }
-        
-        Auth.auth().createUser(withEmail: email, password: password) { result, error in
-            if let error = error {
-                errorMessage = error.localizedDescription
-            } else {
-                errorMessage = "User registered successfully!"
-            }
+
+    func registerUser() {
+        if email.isEmpty || password.isEmpty || confirmPassword.isEmpty {
+            errorMessage = "Please fill in all fields."
+        } else if password != confirmPassword {
+            errorMessage = "Passwords do not match."
+        } else {
+            errorMessage = "Registration successful."
         }
     }
 }
