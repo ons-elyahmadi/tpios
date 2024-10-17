@@ -8,10 +8,11 @@ struct SplashScreenView: View {
             LoginView() // Redirect to login view after animation
         } else {
             VStack {
-                LottieView(animationName: "3ORwIiVeNK", loopMode: .playOnce) // Use your Lottie animation here
-                    .frame(width: 300, height: 300)
+                LottieView(animationURL: "https://lottie.host/749b8b2d-e36e-4d52-b484-a8b7a0b6adb7/5jFCg5xDLa.json", loopMode: .playOnce)
+                    .frame(width: 300, height: 300) // Adjust size as needed
             }
             .onAppear {
+                // Set a delay of 3 seconds to switch to the login view
                 DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
                     self.isActive = true
                 }
