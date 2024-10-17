@@ -1,46 +1,27 @@
 import SwiftUI
 import Lottie
 
-// Créer une vue qui utilise UIViewRepresentable pour intégrer Lottie dans SwiftUI
 struct LottieView: UIViewRepresentable {
-    var animationURL: String
-    var loopMode: LottieLoopMode = .loop
+    var filename: String
     
-    let animationView = LottieAnimationView()
-
-    func makeUIView(context: Context) -> UIView {
+    func makeUIView(context: Context) -> some UIView {
         let view = UIView(frame: .zero)
-
-        // Charger l'animation à partir de l'URL
-        if let url = URL(string: animationURL) {
-            LottieAnimation.loadedFrom(url: url, closure: { animation in
-                guard let animation = animation else {
-                    print("Échec du chargement de l'animation")
-                    return
-                }
-
-                // Configurer l'animation
-                animationView.animation = animation
-                animationView.contentMode = .scaleAspectFit
-                animationView.loopMode = loopMode
-                animationView.play()
-
-                // Ajouter Lottie AnimationView à la vue SwiftUI
-                view.addSubview(animationView)
-
-                // Contraintes pour ajuster l'animationView à la taille de la vue
-                animationView.translatesAutoresizingMaskIntoConstraints = false
-                NSLayoutConstraint.activate([
-                    animationView.widthAnchor.constraint(equalTo: view.widthAnchor),
-                    animationView.heightAnchor.constraint(equalTo: view.heightAnchor)
-                ])
-            }, animationCache: LRUAnimationCache.sharedCache)
-        }
-
+        
+        let animationView = AnimationView(url: URL(string: filename)!)
+        animationView.contentMode = .scaleAspectFit
+        animationView.loopMode = .playOnce
+        animationView.play()
+        
+        animationView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(animationView)
+        
+        NSLayoutConstraint.activate([
+            animationView.heightAnchor.constraint(equalTo: view.heightAnchor),
+            animationView.widthAnchor.constraint(equalTo: view.widthAnchor)
+        ])
+        
         return view
     }
-
-    func updateUIView(_ uiView: UIView, context: Context) {
-        // Mettre à jour la vue si nécessaire
-    }
+    
+    func updateUIView(_ uiView: UIView, context: Context) {}
 }
