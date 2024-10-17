@@ -1,0 +1,16 @@
+import SwiftUI
+import Lottie
+
+struct LottieView: UIViewRepresentable {
+    var animationName: String
+    var loopMode: LottieLoopMode = .playOnce
+    
+    func makeUIView(context: UIViewRepresentableContext<LottieView>) -> AnimationView {
+        let animationView = AnimationView(name: animationName)
+        animationView.loopMode = loopMode
+        animationView.play()
+        return animationView
+    }
+
+    func updateUIView(_ uiView: AnimationView, context: UIViewRepresentableContext<LottieView>) {}
+}
