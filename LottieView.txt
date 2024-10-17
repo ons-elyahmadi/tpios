@@ -1,22 +1,44 @@
-import SwiftUI
+import UIKit
 import Lottie
 
-struct LottieView: UIViewRepresentable {
-    var animationURL: String
-    var loopMode: LottieLoopMode = .playOnce
-    
-    func makeUIView(context: UIViewRepresentableContext<LottieView>) -> AnimationView {
-        let animationView = AnimationView()
-        // Load animation from URL
-        Animation.loadedFrom(url: URL(string: animationURL)!) { animation in
-            if let animation = animation {
-                animationView.animation = animation
-                animationView.play()
-            }
-        }
-        animationView.loopMode = loopMode
-        return animationView
+class ViewController: UIViewController {
+
+    // Créer une instance de Lottie AnimationView
+    let animationView = LottieAnimationView()
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        // Appeler la fonction qui configure et charge l'animation
+        setupAnimation()
     }
 
-    func updateUIView(_ uiView: AnimationView, context: UIViewRepresentableContext<LottieView>) {}
+    func setupAnimation() {
+        // L'URL de l'animation Lottie
+        let urlString = "https://lottie.host/d8e8caeb-5100-4086-a993-058992105f90/sxG1mAWEjI.json"
+
+        // Charger l'animation depuis l'URL du fichier JSON
+        if let url = URL(string: urlString) {
+            LottieAnimation.loadedFrom(url: url, closure: { [weak self] animation in
+                guard let self = self else { return }
+                guard let animation = animation else {
+                    print("Échec du chargement de l'animation")
+                    return
+                }
+
+                // Définir l'animation dans l'animationView
+                self.animationView.animation = animation
+                self.animationView.frame = CGRect(x: 0, y: 0, width: 300, height: 300)
+                self.animationView.center = self.view.center
+                self.animationView.contentMode = .scaleAspectFit
+                self.view.addSubview(self.animationView)
+
+                // Lancer l'animation en boucle
+                self.animationView.loopMode = .loop
+                self.animationView.play()
+            }, animationCache: LRUAnimationCache.sharedCache)
+        } else {
+            print("URL invalide")
+        }
+    }
 }
