@@ -1,28 +1,22 @@
 import SwiftUI
 
-struct SplashScreenView: View {
-    @State private var isActive = false
-    
+struct ContentView: View {
     var body: some View {
-        if isActive {
-            LoginView() // Redirect to login view after animation
-        } else {
-            VStack {
-                LottieView(animationURL: "https://lottie.host/749b8b2d-e36e-4d52-b484-a8b7a0b6adb7/5jFCg5xDLa.json", loopMode: .playOnce)
-                    .frame(width: 300, height: 300) // Adjust size as needed
-            }
-            .onAppear {
-                // Set a delay of 3 seconds to switch to the login view
-                DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-                    self.isActive = true
-                }
-            }
+        VStack {
+            Text("Lottie Animation in SwiftUI")
+                .font(.headline)
+                .padding()
+
+            // Appeler la LottieView avec l'URL de l'animation
+            LottieView(animationURL: "https://lottie.host/d8e8caeb-5100-4086-a993-058992105f90/sxG1mAWEjI.json")
+                .frame(width: 300, height: 300)
         }
+        .padding()
     }
 }
 
-struct SplashScreenView_Previews: PreviewProvider {
+struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        SplashScreenView()
+        ContentView()
     }
 }
