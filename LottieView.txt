@@ -1,44 +1,46 @@
-import UIKit
+import SwiftUI
 import Lottie
 
-class ViewController: UIViewController {
-
-    // Créer une instance de Lottie AnimationView
+// Créer une vue qui utilise UIViewRepresentable pour intégrer Lottie dans SwiftUI
+struct LottieView: UIViewRepresentable {
+    var animationURL: String
+    var loopMode: LottieLoopMode = .loop
+    
     let animationView = LottieAnimationView()
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
+    func makeUIView(context: Context) -> UIView {
+        let view = UIView(frame: .zero)
 
-        // Appeler la fonction qui configure et charge l'animation
-        setupAnimation()
-    }
-
-    func setupAnimation() {
-        // L'URL de l'animation Lottie
-        let urlString = "https://lottie.host/d8e8caeb-5100-4086-a993-058992105f90/sxG1mAWEjI.json"
-
-        // Charger l'animation depuis l'URL du fichier JSON
-        if let url = URL(string: urlString) {
-            LottieAnimation.loadedFrom(url: url, closure: { [weak self] animation in
-                guard let self = self else { return }
+        // Charger l'animation à partir de l'URL
+        if let url = URL(string: animationURL) {
+            LottieAnimation.loadedFrom(url: url, closure: { animation in
                 guard let animation = animation else {
                     print("Échec du chargement de l'animation")
                     return
                 }
 
-                // Définir l'animation dans l'animationView
-                self.animationView.animation = animation
-                self.animationView.frame = CGRect(x: 0, y: 0, width: 300, height: 300)
-                self.animationView.center = self.view.center
-                self.animationView.contentMode = .scaleAspectFit
-                self.view.addSubview(self.animationView)
+                // Configurer l'animation
+                animationView.animation = animation
+                animationView.contentMode = .scaleAspectFit
+                animationView.loopMode = loopMode
+                animationView.play()
 
-                // Lancer l'animation en boucle
-                self.animationView.loopMode = .loop
-                self.animationView.play()
+                // Ajouter Lottie AnimationView à la vue SwiftUI
+                view.addSubview(animationView)
+
+                // Contraintes pour ajuster l'animationView à la taille de la vue
+                animationView.translatesAutoresizingMaskIntoConstraints = false
+                NSLayoutConstraint.activate([
+                    animationView.widthAnchor.constraint(equalTo: view.widthAnchor),
+                    animationView.heightAnchor.constraint(equalTo: view.heightAnchor)
+                ])
             }, animationCache: LRUAnimationCache.sharedCache)
-        } else {
-            print("URL invalide")
         }
+
+        return view
+    }
+
+    func updateUIView(_ uiView: UIView, context: Context) {
+        // Mettre à jour la vue si nécessaire
     }
 }
