@@ -1,15 +1,15 @@
 import SwiftUI
-import Firebase
 
-@main
-struct YourApp: App {
-    init() {
-        FirebaseApp.configure() // Initialize Firebase
-    }
-    
-    var body: some Scene {
-        WindowGroup {
-            SplashScreenView() // Start with Splash Screen
+struct ContentView: View {
+    var body: some View {
+        NavigationView {
+            SplashScreenView() // Afficher l'animation en premier
         }
+    }
+}
+
+struct ContentView_Previews: PreviewProvider {
+    static var previews: some View {
+        ContentView()
     }
 }
